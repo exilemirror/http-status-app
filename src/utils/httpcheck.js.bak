@@ -1,0 +1,54 @@
+const fs = require('fs');
+const csv = require('csv-parser');
+const linkCheck = require('link-check');
+const csvData = './filenames/urls.csv';
+const jsonFile = './filenames/results.json';
+
+// Read csv file
+// const csvFile = './filenames/urls.csv';
+
+const processFile = (csvFile, callback) => {
+    const allUrls = [];
+    fs.createReadStream(csvFile)
+    .pipe(csv())
+    .on('data', (data) => allUrls.push(data))
+    .on('end', () => {
+        for (let index = 0; index < allUrls.length; ++index) {
+            const siteUrl = allUrls[index].url;
+            const siteName = allUrls[index].name;
+
+            callback(siteUrl)
+
+            // // Check URL status
+            // linkCheck(siteUrl, (err, result) => {
+            //     console.log(result)
+            //     return;
+            // })
+        //     
+        //     if (err) {
+        //         // console.error(err)
+        //         callback('Error!', undefined);
+        //     } else {
+        //         const data = {
+        //             name: siteName,
+        //             url: result.link,
+        //             statusCode: result.statusCode,
+        //             status: result.status
+        //         }
+        //         const jsonData = JSON.stringify(data)
+        //         fs.appendFileSync('./filenames/results.json', jsonData)
+        //         }
+        //     // console.log(allResult)
+        //     });
+            
+        }
+    });
+
+}
+
+processFile(csvData, (finalResult) => {
+    console.log(finalResult)
+})
+
+
+module.exports = processFile
